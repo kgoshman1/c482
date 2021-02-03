@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="599.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.ModifyPartController">
+   <children>
+      <VBox layoutX="39.0" layoutY="66.0" prefHeight="335.0" prefWidth="173.0" spacing="10.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <RadioButton fx:id="modifyOutsourcedRadioButton" mnemonicParsing="false" onAction="#modifyOutsourcedRadioButton" text="Outsourced">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="rButtonAdd" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="modifyinHouseRadioButton" mnemonicParsing="false" onAction="#modifyinHouseRadioButton" text="InHouse" toggleGroup="$rButtonAdd" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
+            </HBox>
+            <TextField fx:id="modifyPartIDTextField" alignment="CENTER" onAction="#modifyPartIDTextField" promptText="ID" />
+            <TextField fx:id="modifyPartNameTextField" alignment="CENTER" onAction="#modifyPartNameField" promptText="Name" />
+            <TextField fx:id="modifyPartInventoryTextField" alignment="CENTER" onAction="#modifyPartInventoryTextField" promptText="Inventory" />
+            <TextField fx:id="modifyPartPriceTextField" alignment="CENTER" onAction="#modifyPartPriceTextField" promptText="Price" />
+            <TextField fx:id="modifyPartMinTextField" alignment="CENTER" onAction="#modifyPartMinTextField" promptText="MIN" />
+            <TextField fx:id="modifyPartMaxTextField" alignment="CENTER" onAction="#modifyPartMaxTextField" promptText="MAX" />
+            <TextField fx:id="modifyPartMachineIDTextField" alignment="CENTER" onAction="#modifyPartMachineIDTextField" promptText="Machine ID" />
+            <TextField fx:id="modifyPartCompanyNameTextField" alignment="CENTER" onAction="#modifyPartCompanyNameTextField" prefHeight="27.0" prefWidth="161.0" promptText="Company Name" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+               <children>
+                  <Button fx:id="modifyPartCancelButton" mnemonicParsing="false" onAction="#modifyPartCancelButton" text="Cancel" />
+                  <Button fx:id="modifyPartSaveButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#modifyPartSaveButton" prefHeight="27.0" prefWidth="57.0" text="Save" />
+               </children>
+            </HBox>
+            <Separator orientation="VERTICAL" prefHeight="315.0" prefWidth="5.0" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.AddPartController">
+   <children>
+      <VBox layoutX="29.0" layoutY="56.0" prefHeight="335.0" prefWidth="173.0" spacing="10.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <RadioButton fx:id="OutsourcedRadioButton" mnemonicParsing="false" onAction="#OutsourcedRadioButton" text="Outsourced">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="rButtonAdd" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="inHouseRadioButton" mnemonicParsing="false" onAction="#inHouseRadioButton" text="InHouse" toggleGroup="$rButtonAdd" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
+            </HBox>
+            <TextField alignment="CENTER" promptText="ID" />
+            <TextField alignment="CENTER" promptText="Name" />
+            <TextField fx:id="addPartInventoryTextField" alignment="CENTER" promptText="Inventory" />
+            <TextField fx:id="addPartPriceTextField" alignment="CENTER" promptText="Price" />
+            <TextField fx:id="addPartMinTextField" alignment="CENTER" promptText="MIN" />
+            <TextField fx:id="AddPartMaxTextField" alignment="CENTER" promptText="MAX" />
+            <TextField fx:id="addPartMachineIDTextField" alignment="CENTER" promptText="Machine ID" />
+            <TextField fx:id="addPartCompanyNameTextField" alignment="CENTER" prefHeight="27.0" prefWidth="161.0" promptText="Company Name" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+               <children>
+                  <Button fx:id="addpartCancelButton" mnemonicParsing="false" onAction="#addpartCancelButton" text="Cancel" />
+                  <Button fx:id="addpartSaveButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addpartSaveButton" prefHeight="27.0" prefWidth="57.0" text="Save" />
+               </children>
+            </HBox>
+            <Separator orientation="VERTICAL" prefHeight="315.0" prefWidth="5.0" />
+         </children>
+      </VBox>
+      <Label fx:id="addPartLabel" layoutX="79.0" layoutY="7.0" prefHeight="27.0" prefWidth="102.0" text="Add Part">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
