@@ -12,6 +12,8 @@ public class Inventory {
 
     private static final ObservableList<Product> allProducts = FXCollections.observableArrayList();
 
+    public static int partID = 0;
+    public static int productID = 0;
 
     public static void addPart(Part part) {
         allParts.add(part);
@@ -37,11 +39,11 @@ public class Inventory {
     }
 
     public static void updatePart(int index, Part selectedPart){
-                                                      //DOUBLE CHECK WHAT BELONGS IN FUNCTION
+             allParts.set(index, selectedPart);                                         //DOUBLE CHECK WHAT BELONGS IN FUNCTION
     }
 
     public static void updateProduct(int index, Product newProduct) {
-
+            allProducts.set(index, newProduct);
     }
 
     public static boolean deletePart(Part selectedPart) {
@@ -54,6 +56,16 @@ public class Inventory {
 
     public static int getPartsCount(){ //yK ;)
         return allParts.size();
+    }
+
+    public static int getPartID(){
+        partID = partID + 1;
+        return partID;
+    }
+
+    public static int getProductID(){
+        productID = productID + 1;
+        return productID;
     }
 
     public static ObservableList<Part> getAllParts() {

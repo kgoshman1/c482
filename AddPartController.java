@@ -8,13 +8,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.*;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import model.InHousePart;
+import model.Inventory;
+import model.OutsourcedPart;
+import model.Part;
 
+import java.io.IOException;
 
 
 public class AddPartController {
@@ -27,8 +27,6 @@ public class AddPartController {
     @FXML
     RadioButton OutsourcedRadioButton;
     @FXML
-    TextField addPartCompanyNameTextField;
-    @FXML
     TextField addPartMachineIDTextField;
     @FXML
     TextField addPartInventoryTextField;
@@ -36,8 +34,6 @@ public class AddPartController {
     TextField addPartPriceTextField;
     @FXML
     TextField addPartMinTextField;
-    @FXML
-    TextField AddPartMaxTextField;
     @FXML
     TextField addPartNameTextField;
     @FXML
@@ -51,13 +47,9 @@ public class AddPartController {
     @FXML
     private boolean isInhouse;
 
-    private String errorMessage = new String();
-//    @FXML
-//    private final Part ModifyPart;
-//    @FXML
-//    Button addpartmainMenuButton;
-//
-//    private boolean isOutsourced;
+    private String errorMessage = "";
+
+    private boolean isOutsourced;
 //    //  private String exceptionMessage = new String();
 //    public modifyPartController(){
 
@@ -98,35 +90,46 @@ public class AddPartController {
 
         try {
             errorMessage = Part.isPartValid(pName, Integer.parseInt(pMin), Integer.parseInt(pMax), Integer.parseInt(pInventory), Double.parseDouble(pPrice), errorMessage);
-            {
-                InHousePart modifiedPart = new InHousePart();
-                modifiedPart.setPartName(pName);
-                modifiedPart.setPartPrice(Double.parseDouble(pPrice));
-                modifiedPart.setPartInStock(Integer.parseInt(pInventory));
-                modifiedPart.setMin(Integer.parseInt(pMin));
-                modifiedPart.setMax(Integer.parseInt(pMax));
-                modifiedPart.setMachineID(Integer.parseInt(pMach));
-
-                try {
-                    modifiedPart.setPartID(Inventory.getPartsCount());
-                    Inventory.addPart(modifiedPart);
-
-                    Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
-                    Scene tableViewScene = new Scene(tableViewParent);
-                    Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    window.setScene(tableViewScene);
-                    window.show();
-
-
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
+            if (errorMessage.length() > 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error adding part");
+                alert.setHeaderText("error");
+                alert.setContentText(errorMessage);
+                alert.showingProperty();
+                errorMessage = "";
+            } else {
+                if (isInhouse) {
+                    InHousePart inhouse = new InHousePart();
+                    inhouse.setPartID(inhouse.getPartID());
+                    inhouse.setPartName(pName);
+                    inhouse.setPartInStock(Integer.parseInt(pInventory));
+                    inhouse.setPartPrice(Double.parseDouble(pPrice));
+                    inhouse.setMin(Integer.parseInt(pMin));
+                    inhouse.setMax(Integer.parseInt(pMax));
+                    inhouse.setMachineID(Integer.parseInt(pMach));
+                    Inventory.addPart(inhouse);
+                } else {
+                    OutsourcedPart outsourced = new OutsourcedPart();
+                    outsourced.setPartID(outsourced.getPartID());
+                    outsourced.setPartName(pName);
+                    outsourced.setPartInStock(Integer.parseInt(pInventory));
+                    outsourced.setPartPrice(Double.parseDouble(pPrice));
+                    outsourced.setMin(Integer.parseInt(pMin));
+                    outsourced.setMax(Integer.parseInt(pMax));
+                    outsourced.setCompanyName(pMach);
+                    Inventory.addPart(outsourced);
                 }
-            }
-        } finally {
 
+            } Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
+              Scene tableViewScene = new Scene(tableViewParent);
+              Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+              window.setScene(tableViewScene);
+              window.show();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
-    }}
-
+    }
+}
 
 
         // Exception in thread "JavaFX Application Thread" java.lang.RuntimeException: java.lang.reflect.InvocationTargetException

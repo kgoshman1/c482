@@ -11,23 +11,35 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Inventory;
 import model.Part;
+import model.Product;
 
-
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ModifyProductController implements Initializable {
 
+    private final int productIndex = MainScreenController.productToModifyIndex();
+    private final String errorMessage = "";
+
+    @FXML private TextField modifyProductIDTextField;
+    @FXML private TextField modifyProductNameTextField;
+    @FXML private TextField modifyProductInventoryTextField;
+    @FXML private TextField modifyPriceTextField;
+    @FXML private TextField modifyMinTextField;
+    @FXML private TextField modifyMaxTextField;
+
 
     @FXML private TextField modifySearchTextField;
+
     @FXML private Button modifySearchTextButton;
     @FXML private TableView<Part> modifyPartsTableView ;
     @FXML private TableColumn<Part, Integer> modifyPartsIDTableColumn;
@@ -44,7 +56,47 @@ public class ModifyProductController implements Initializable {
     @FXML private Button modifyTableViewSaveButton;
     @FXML private Button tableViewAddButton;
     @FXML void modifyTableViewDeleteButton(ActionEvent event) {}
-    @FXML void modifyTableViewSaveButton(ActionEvent event) {}
+    protected  int autoID = MainScreenController.productsToModify;
+
+    public void initData(Product product){
+        modifyProductNameTextField.setText(product.getName());
+        modifyProductInventoryTextField.setText(Integer.toString(product.getStock()));
+        modifyPriceTextField.setText(Double.toString(product.getPrice()));
+        modifyMaxTextField.setText(Integer.toString(product.getMax()));
+        modifyMinTextField.setText(Integer.toString(product.getMin()));
+
+    }
+
+    @FXML void modifyTableViewSaveButton(ActionEvent event) throws IOException{
+        String pId = modifyProductIDTextField.getText();
+        String pName = modifyProductNameTextField.getText();
+        String pInventory = modifyProductInventoryTextField.getText();
+        String pPrice = modifyPriceTextField.getText();
+        String pMin = modifyMinTextField.getText();
+        String pMax = modifyMaxTextField.getText();
+
+//        try {
+            Product product = new Product();
+            product.setProductID(Integer.parseInt(pId));
+            product.setName(pName);
+            product.setPrice(Double.parseDouble(pPrice));
+            product.setStock(Integer.parseInt(pInventory));
+            product.setMin(Integer.parseInt(pMin));
+            product.setMax(Integer.parseInt(pMax));
+            Inventory.updateProduct(productIndex, product);
+
+            Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
+            Scene tableViewScene = new Scene(tableViewParent);
+
+            Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+            window.setScene(tableViewScene);
+            window.show();
+
+//        } catch (NullPointerException e) {
+//
+//        }
+    }
     @FXML
     protected ObservableList<Part> partsToAdd = FXCollections.observableArrayList();
 
@@ -68,10 +120,10 @@ public class ModifyProductController implements Initializable {
 //            }
     }
 
-                                              @FXML void addButtonMethod(ActionEvent event){
-        Part part = modifyAsscPartsTableView.getSelectionModel().getSelectedItem();
-        partsToAdd.add(part);
-        updatePartTable2();
+    @FXML void addButtonMethod(ActionEvent event){
+    Part part = modifyAsscPartsTableView.getSelectionModel().getSelectedItem();
+    partsToAdd.add(part);
+    updatePartTable2();
     }
 
     public void updatePartTable2() {
@@ -89,7 +141,16 @@ public class ModifyProductController implements Initializable {
         window.show();}
 
     @Override public void initialize(URL url, ResourceBundle resourceBundle) {
-        updatePartTable();
+        Product product = Inventory.getAllProducts().get(autoID);
+        modifyProductNameTextField.setText(product.getName());
+        modifyProductInventoryTextField.setText(Integer.toString(product.getStock()));
+        modifyMinTextField.setText(Integer.toString(product.getMin()));
+        modifyMaxTextField.setText(Integer.toString(product.getMax()));
+        modifyPriceTextField.setText(Double.toString(product.getPrice()));
+
+
+
+
 
         modifyPartsIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
         modifyPartsNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
@@ -127,7 +188,7 @@ public class ModifyProductController implements Initializable {
 
 }
 
-    private void updatePartTable() {
+    public void updatePartTable() {
         modifyAsscPartsTableView.setItems(Inventory.getAllParts());
     }
     }

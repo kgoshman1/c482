@@ -6,32 +6,28 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Inventory;
+import model.OutsourcedPart;
 import model.Part;
 import model.Product;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 
 public class AddProductController implements  Initializable {
 
     Product newProduct;
-
+    private String errorMessage = "";
     @FXML
     private Label addProductLabel;
     @FXML
@@ -84,13 +80,56 @@ public class AddProductController implements  Initializable {
     @FXML
     protected ObservableList<Part> partsToAdd = FXCollections.observableArrayList();
 
-
-
+    private boolean isOutsourced;
 
     @FXML
-    void tableViewSaveButton(ActionEvent event){
+    void tableViewSaveButton(ActionEvent event) throws IOException {
+        String pName = productNameTextfield.getText();
+        String pInventory = productInventoryTextField.getText();
+        String pPrice = priceTextField.getText();
+        String pMin = minTextField.getText();
+        String pMax = maxTextField.getText();
 
+
+        try {
+            errorMessage = Part.isPartValid(pName, Integer.parseInt(pMin), Integer.parseInt(pMax), Integer.parseInt(pInventory), Double.parseDouble(pPrice), errorMessage);
+            if (errorMessage.length() > 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error adding part");
+                alert.setHeaderText("error");
+                alert.setContentText(errorMessage);
+                alert.showingProperty();
+                errorMessage = "";
+            } else {
+                if (!isOutsourced) {
+                    Product product = new Product();
+                    product.setProductID(product.getProductID());
+                    product.setName(pName);
+                    product.setStock(Integer.parseInt(pInventory));
+                    product.setPrice(Double.parseDouble(pPrice));
+                    product.setMin(Integer.parseInt(pMin));
+                    product.setMax(Integer.parseInt(pMax));
+                    Inventory.addProduct(product);
+                } else {
+                    OutsourcedPart outsourced = new OutsourcedPart();
+                    outsourced.setPartID(outsourced.getPartID());
+                    outsourced.setPartName(pName);
+                    outsourced.setPartInStock(Integer.parseInt(pInventory));
+                    outsourced.setPartPrice(Double.parseDouble(pPrice));
+                    outsourced.setMin(Integer.parseInt(pMin));
+                    outsourced.setMax(Integer.parseInt(pMax));
+                }
+
+            } Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
+            Scene tableViewScene = new Scene(tableViewParent);
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(tableViewScene);
+            window.show();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @FXML
     void setTableViewAddButton(ActionEvent event) {
@@ -103,7 +142,6 @@ public class AddProductController implements  Initializable {
     public void updatePartTable2() {
         asscPartsTableView.setItems(partsToAdd);
     }
-
 
 
     @FXML

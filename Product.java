@@ -2,8 +2,9 @@ package model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Parent;
 
-public class Product {
+public class Product extends Parent {
 
     protected ObservableList<Part> associatedParts = FXCollections.observableArrayList();
     protected int productID;
@@ -20,6 +21,10 @@ public class Product {
         this.productStock = productInStock;
         this.min = min;
         this.max = max;
+    }
+
+    public Product() {
+
     }
 
 
@@ -77,5 +82,20 @@ public class Product {
 
     public void setMax(int max) {
         this.max = max;
+    }
+
+    public static String isPartValid(String partName, int min, int max, int productStock, double partPrice, String errorMessage) {
+        if (partName == null) {
+            errorMessage = errorMessage + "The name field is required";
+        } else if (productStock < 1) {
+            errorMessage = errorMessage + "The price must be greater than 50";
+        } else if (partPrice <= 0) {
+            errorMessage = errorMessage + "The price must be greater than 0";
+        } else if (max < min) {
+            errorMessage = errorMessage + "Max must be greater than min";
+        } else if (productStock < 1 || productStock > max) {
+            errorMessage = errorMessage + "The inventory must be between min and max values";
+        }
+        return errorMessage;
     }
 }
