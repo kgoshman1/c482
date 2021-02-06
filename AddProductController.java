@@ -15,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Inventory;
-import model.OutsourcedPart;
 import model.Part;
 import model.Product;
 
@@ -80,6 +79,9 @@ public class AddProductController implements  Initializable {
     @FXML
     protected ObservableList<Part> partsToAdd = FXCollections.observableArrayList();
 
+
+    private int prodID;
+
     private boolean isOutsourced;
 
     @FXML
@@ -103,21 +105,16 @@ public class AddProductController implements  Initializable {
             } else {
                 if (!isOutsourced) {
                     Product product = new Product();
-                    product.setProductID(product.getProductID());
+                    product.setProductID(prodID);
                     product.setName(pName);
                     product.setStock(Integer.parseInt(pInventory));
                     product.setPrice(Double.parseDouble(pPrice));
                     product.setMin(Integer.parseInt(pMin));
                     product.setMax(Integer.parseInt(pMax));
                     Inventory.addProduct(product);
-                } else {
-                    OutsourcedPart outsourced = new OutsourcedPart();
-                    outsourced.setPartID(outsourced.getPartID());
-                    outsourced.setPartName(pName);
-                    outsourced.setPartInStock(Integer.parseInt(pInventory));
-                    outsourced.setPartPrice(Double.parseDouble(pPrice));
-                    outsourced.setMin(Integer.parseInt(pMin));
-                    outsourced.setMax(Integer.parseInt(pMax));
+
+
+
                 }
 
             } Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
@@ -193,6 +190,10 @@ public class AddProductController implements  Initializable {
         asscPartsCostTableColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
 
         ObservableList<Part> allParts = Inventory.getAllParts();
+
+        prodID = Inventory.getProductID();
+        productIDTextfield.setText(Integer.toString(prodID));
+        productIDTextfield.setEditable(false);
 
 //PARTS SEARCH
         FilteredList<Part> filteredData = new FilteredList<>(allParts, p -> true);

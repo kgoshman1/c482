@@ -4,6 +4,7 @@ package view_controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,9 +16,11 @@ import model.OutsourcedPart;
 import model.Part;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
-public class AddPartController {
+public class AddPartController implements Initializable {
     @FXML
     Label MachineIdLabel;
     @FXML
@@ -46,6 +49,10 @@ public class AddPartController {
     Button addpartSaveButton;
     @FXML
     private boolean isInhouse;
+
+    @FXML private int pId;
+
+
 
     private String errorMessage = "";
 
@@ -80,6 +87,7 @@ public class AddPartController {
 
     @FXML
     void addpartSaveButton(ActionEvent event) throws IOException {
+
         String pName = addPartNameTextField.getText();
         String pInventory = addPartInventoryTextField.getText();
         String pPrice = addPartPriceTextField.getText();
@@ -89,7 +97,7 @@ public class AddPartController {
 
 
         try {
-            errorMessage = Part.isPartValid(pName, Integer.parseInt(pMin), Integer.parseInt(pMax), Integer.parseInt(pInventory), Double.parseDouble(pPrice), errorMessage);
+            errorMessage = Part.isPartValid( pName, Integer.parseInt(pMin), Integer.parseInt(pMax), Integer.parseInt(pInventory), Double.parseDouble(pPrice), errorMessage);
             if (errorMessage.length() > 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error adding part");
@@ -100,7 +108,7 @@ public class AddPartController {
             } else {
                 if (isInhouse) {
                     InHousePart inhouse = new InHousePart();
-                    inhouse.setPartID(inhouse.getPartID());
+                    inhouse.setPartID(pId);
                     inhouse.setPartName(pName);
                     inhouse.setPartInStock(Integer.parseInt(pInventory));
                     inhouse.setPartPrice(Double.parseDouble(pPrice));
@@ -110,7 +118,7 @@ public class AddPartController {
                     Inventory.addPart(inhouse);
                 } else {
                     OutsourcedPart outsourced = new OutsourcedPart();
-                    outsourced.setPartID(outsourced.getPartID());
+                    outsourced.setPartID(pId);
                     outsourced.setPartName(pName);
                     outsourced.setPartInStock(Integer.parseInt(pInventory));
                     outsourced.setPartPrice(Double.parseDouble(pPrice));
@@ -118,6 +126,7 @@ public class AddPartController {
                     outsourced.setMax(Integer.parseInt(pMax));
                     outsourced.setCompanyName(pMach);
                     Inventory.addPart(outsourced);
+
                 }
 
             } Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
@@ -128,6 +137,14 @@ public class AddPartController {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        pId = Inventory.getPartID();
+        addPartIDTextField.setText(Integer.toString(pId));
+        addPartIDTextField.setEditable(false);
     }
 }
 

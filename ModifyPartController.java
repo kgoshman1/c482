@@ -1,5 +1,6 @@
 package view_controller;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,8 @@ public class ModifyPartController implements Initializable {
     public TextField addPartPriceTextField;
     @FXML
     Label modifyPartLabel;
+
+    @FXML private int pId;
 
     @FXML
     RadioButton modifyinHouseRadioButton;
@@ -61,7 +64,7 @@ public class ModifyPartController implements Initializable {
     private String errorMessage = "";
     private boolean isOutsourced;
     private boolean isInhouse;
-    protected int autoID = MainScreenController.partsToModify;
+    private final int partIndex = MainScreenController.partsToModify;
 
     @FXML
     void modifyinHouseRadioButton(ActionEvent event) {
@@ -120,7 +123,6 @@ public class ModifyPartController implements Initializable {
 
     @FXML
     void modifyPartSaveButton(ActionEvent event) throws IOException {
-
         String pName = modifyPartCompanyNameTextField.getText();
         String pInventory = modifyPartInventoryTextField.getText();
         String pPrice = modifyPartPriceTextField.getText();
@@ -141,26 +143,26 @@ public class ModifyPartController implements Initializable {
 //                alert.showingProperty();
 //                errorMessage = "";
 ////            } else {
-            if (isInhouse == true) {
+            if (isInhouse) {
                 InHousePart inhouse = new InHousePart();
-                inhouse.setPartID(inhouse.getPartID());
+                inhouse.setPartID(pId);
                 inhouse.setPartName(pName);
                 inhouse.setPartInStock(Integer.parseInt(pInventory));
                 inhouse.setPartPrice(Double.parseDouble(pPrice));
                 inhouse.setMin(Integer.parseInt(pMin));
                 inhouse.setMax(Integer.parseInt(pMax));
                 inhouse.setMachineID(Integer.parseInt(pMach));
-                Inventory.updatePart(autoID, inhouse);
+                Inventory.updatePart(partIndex, inhouse);
             } else {
                 OutsourcedPart outsourced = new OutsourcedPart();
-                outsourced.setPartID(outsourced.getPartID());
+                outsourced.setPartID(pId);
                 outsourced.setPartName(pName);
                 outsourced.setPartInStock(Integer.parseInt(pInventory));
                 outsourced.setPartPrice(Double.parseDouble(pPrice));
                 outsourced.setMin(Integer.parseInt(pMin));
                 outsourced.setMax(Integer.parseInt(pMax));
                 outsourced.setCompanyName(pMach);
-                Inventory.updatePart(autoID, outsourced);
+                Inventory.updatePart(partIndex, outsourced);
             }
 
             Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
@@ -178,23 +180,31 @@ public class ModifyPartController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Part part = Inventory.getAllParts().get(autoID);
+        modifyPartIDTextField.setEditable(false);
+        Part part = Inventory.getAllParts().get(partIndex);
+        modifyPartIDTextField.setText(Integer.toString(part.getPartID()));
         modifyPartCompanyNameTextField.setText(part.getPartName());
         modifyPartInventoryTextField.setText(Integer.toString(part.getPartInStock()));
         modifyPartPriceTextField.setText(Double.toString(part.getPartPrice()));
         modifyPartMinTextField.setText(Integer.toString(part.getMin()));
         modifyPartMaxTextField.setText(Integer.toString(part.getMin()));
+
         if (part instanceof InHousePart) {
             modifyinHouseRadioButton.setSelected(true);
             MachineIDLabel.setText("Machine ID");
-            modifyPartMachineIDTextField.setText(Integer.toString(((InHousePart) Inventory.getAllParts().get(autoID)).getMachineID()));
+            modifyPartMachineIDTextField.setText(Integer.toString(((InHousePart) Inventory.getAllParts().get(partIndex)).getMachineID()));
         } else {
             modifyOutsourcedRadioButton.setSelected(true);
             MachineIDLabel.setText("Company Name");
-            modifyPartMachineIDTextField.setText((((OutsourcedPart) Inventory.getAllParts().get(autoID)).getCompanyName()));
+            modifyPartMachineIDTextField.setText((((OutsourcedPart) Inventory.getAllParts().get(partIndex)).getCompanyName()));
 
         }
+        ObservableList<Part> allParts = Inventory.getAllParts();
+
+        pId = part.getPartID();
+
     }
+
 }
 
 

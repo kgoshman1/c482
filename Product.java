@@ -27,7 +27,6 @@ public class Product extends Parent {
 
     }
 
-
     public ObservableList<Part> getAssociatedParts() {
         return associatedParts;
     }
