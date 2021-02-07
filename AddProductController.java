@@ -81,8 +81,8 @@ public class AddProductController implements  Initializable {
     private Button tableViewSaveButton;
     @FXML
     protected ObservableList<Part> partsToAdd = FXCollections.observableArrayList();
-    @FXML protected ObservableList<Part>tempList = FXCollections.observableArrayList();
-
+    @FXML protected ObservableList<Part>associatedParts = FXCollections.observableArrayList();
+    private final int productIndex = MainScreenController.productsToModify;
 
 
     @FXML protected ObservableList<Part> associatedPartsList = FXCollections.observableArrayList();
@@ -125,12 +125,13 @@ public class AddProductController implements  Initializable {
                     product.setPrice(Double.parseDouble(pPrice));
                     product.setMin(Integer.parseInt(pMin));
                     product.setMax(Integer.parseInt(pMax));
-                    for (int i = 0; i < associatedPartsList.size(); i++) {
-                        product.addAssProduct(associatedPartsList.get(i));
+                    for (int i = 0; i < associatedParts.size(); i++) {
+                        product.addAssProduct(associatedParts.get(i));
 
                     }
                     Inventory.addProduct(product);
 //                    Inventory.updateProduct(product);
+                    saveProduct();
                 }
             } Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
             Scene tableViewScene = new Scene(tableViewParent);
@@ -142,13 +143,44 @@ public class AddProductController implements  Initializable {
         }
     }
 
+    public void saveProduct(){
+        Product product = new Product(Integer.parseInt(productIDTextfield.getText()),productNameTextfield.getText(),
+                Double.parseDouble(priceTextField.getText()),Integer.parseInt(productInventoryTextField.getText()),
+                Integer.parseInt(minTextField.getText()),Integer.parseInt(maxTextField.getText()));
+        for (Part associatedPart : associatedParts) {
+            product.addAssProduct(associatedPart);
+        }
+        Inventory.updateProduct(productIndex,product);
+    }
+
 
     @FXML
     void setTableViewAddButton(ActionEvent event) {
-
         Part selectedparts = addPartsTableView.getSelectionModel().getSelectedItem();
         newestProduct.addAssProduct(selectedparts);
-        asscPartsTableView.setItems(newestProduct.getAssociatedParts());
+        boolean repeatedItem = false;
+
+        if (selectedparts == null){
+            return;
+        } else {
+            int id = selectedparts.getPartID();
+            for (int i = 0; i < associatedParts.size(); i++) {
+                if (associatedParts.get(i).getPartID() == id) {
+
+                }
+
+            }
+            if (!repeatedItem) {
+                associatedParts.add(selectedparts);
+
+            }
+
+            asscPartsTableView.setItems(associatedParts);
+
+        }
+//        Part selectedparts = addPartsTableView.getSelectionModel().getSelectedItem();
+//        newestProduct.addAssProduct(selectedparts);
+//        asscPartsTableView.setItems(newestProduct.getAssociatedParts());
 
         //updatePartTable2();
     }
@@ -212,7 +244,7 @@ public class AddProductController implements  Initializable {
         productIDTextfield.setText(Integer.toString(prodID));
         productIDTextfield.setEditable(false);
 
-        asscPartsTableView.setItems(associatedPartsList);
+        asscPartsTableView.setItems(associatedParts);
 
 
 

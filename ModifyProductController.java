@@ -75,7 +75,8 @@ public class ModifyProductController implements Initializable {
     private final ObservableList<Part> tempList = FXCollections.observableArrayList();
 
     private Product selectedProduct;
-   @FXML private final ObservableList<Part>associatedParts = FXCollections.observableArrayList();
+    @FXML
+    private final ObservableList<Part> associatedParts = FXCollections.observableArrayList();
     Product newestProduct = new Product();
 
 
@@ -86,7 +87,7 @@ public class ModifyProductController implements Initializable {
         newestProduct.addAssProduct(selectedparts);
         boolean repeatedItem = false;
 
-        if (selectedparts == null){
+        if (selectedparts == null) {
             return;
         } else {
             int id = selectedparts.getPartID();
@@ -105,7 +106,7 @@ public class ModifyProductController implements Initializable {
         }//modifyPartsTableView.setItems(newestProduct.getAssociatedParts());
 
 
-       // modifyPartsTableView.setItems(newestProduct.getAssociatedParts());
+        // modifyPartsTableView.setItems(newestProduct.getAssociatedParts());
 
 //
 //        Part selectedPart = modifyAsscPartsTableView.getSelectionModel().getSelectedItem();
@@ -113,60 +114,30 @@ public class ModifyProductController implements Initializable {
 //            associatedParts.add(selectedPart);
 //            modifyPartsTableView.setItems(associatedParts);
 
-        }
-        //}
-   // }
+    }
+    //}
+    // }
 
     @FXML
     void modifyTableViewSaveButton(ActionEvent event) throws IOException {
-//        selectedProduct = product;
-//        String pId = modifyProductIDTextField.getText();
-//        String pName = modifyProductNameTextField.getText();
-//        String pInventory = modifyProductInventoryTextField.getText();
-//        String pPrice = modifyPriceTextField.getText();
-//        String pMin = modifyMinTextField.getText();
-//        String pMax = modifyMaxTextField.getText();
-//
-////        try {
-//        Product product = new Product(0, "", 0, 0, 0, 0);
-//        product.setProductID(Integer.parseInt(pId));
-//        product.setName(pName);
-//        product.setPrice(Double.parseDouble(pPrice));
-//        product.setStock(Integer.parseInt(pInventory));
-//        product.setMin(Integer.parseInt(pMin));
-//        product.setMax(Integer.parseInt(pMax));
-////        for (Part part : tempList) {
-////            product.addAssProduct(part);
-//
-//            Inventory.updateProduct(productIndex, product);
-//            /// saveProduct();
-//            // Inventory.updateProduct(Inventory.getPartID(),product);
-////         Inventory.getAllProducts().set(selectedIndex,product);
 
-            saveProduct();
-
-            Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
-            Scene tableViewScene = new Scene(tableViewParent);
-
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            window.setScene(tableViewScene);
-            window.show();
-
-//        } catch (NullPointerException e) {
-//
-//        }
-        }
+        saveProduct();
+        Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
+        Scene tableViewScene = new Scene(tableViewParent);
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(tableViewScene);
+        window.show();
+    }
 
 
-    public void saveProduct(){
-        Product product = new Product(Integer.parseInt(modifyProductIDTextField.getText()),modifyProductNameTextField.getText(),
-                Double.parseDouble(modifyPriceTextField.getText()),Integer.parseInt(modifyProductInventoryTextField.getText()),
-                Integer.parseInt(modifyMinTextField.getText()),Integer.parseInt(modifyMaxTextField.getText()));
-        for (int i =0; i< associatedParts.size(); i++){
+    public void saveProduct() {
+        Product product = new Product(Integer.parseInt(modifyProductIDTextField.getText()), modifyProductNameTextField.getText(),
+                Double.parseDouble(modifyPriceTextField.getText()), Integer.parseInt(modifyProductInventoryTextField.getText()),
+                Integer.parseInt(modifyMinTextField.getText()), Integer.parseInt(modifyMaxTextField.getText()));
+        for (int i = 0; i < associatedParts.size(); i++) {
             product.addAssProduct(associatedParts.get(i));
         }
-                Inventory.updateProduct(productIndex,product);
+        Inventory.updateProduct(productIndex, product);
     }
 
     @FXML
@@ -188,8 +159,6 @@ public class ModifyProductController implements Initializable {
             aProduct.forEach((allProducts::remove));
         }
     }
-
-
 
     @FXML
     void modifyTableViewCancelButton(ActionEvent event) throws IOException {
@@ -213,38 +182,24 @@ public class ModifyProductController implements Initializable {
         modifyMaxTextField.setText(Integer.toString(product.getMax()));
         modifyPriceTextField.setText(Double.toString(product.getPrice()));
 
-        //modifyAsscPartsTableView.setItems(Inventory.getAllParts());
-
 
         modifyAsscPartsIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
         modifyAsscPartsNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
         modifyAsscPartsInventoryTableColumn.setCellValueFactory(new PropertyValueFactory<>("partInStock"));
         modifyAsscPartsCostTableColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
 
-        //I think this is the problem
-        modifyPartsTableView.setItems(Inventory.getAllProducts().get(productIndex).getAssociatedParts());
-        //CALLING GET ASSOCIATED PARTS WITH NOTHING IN IT!!!!THIS IS THE PROBLEM
 
         modifyPartsIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
         modifyPartsNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
         modifyPartsInventoryTableColumn.setCellValueFactory(new PropertyValueFactory<>("partInStock"));
         modifyPartsCostTableColumn.setCellValueFactory(new PropertyValueFactory<>("partPrice"));
 
-    //   modifyPartsTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         modifyPartsTableView.setItems(product.getAssociatedParts());
 
-        //modifyPartsTableView.setItems(selectedProduct.getAssociatedParts());
 
-
-        //updatePartTable2();
         ObservableList<Part> allParts = Inventory.getAllParts();
 
-
-
-       // updatePartTable2();
-
-/////////////////////////////////////////////////////////////////////////////////////
 
 //PARTS SEARCH
         FilteredList<Part> filteredData = new FilteredList<>(allParts, p -> true);
@@ -267,16 +222,6 @@ public class ModifyProductController implements Initializable {
 
         //SETS MODIFIED PARTS TABLEVIEW
         modifyAsscPartsTableView.setItems(sortedData);
-
-
     }
 
-    public void updatePartTable() {
-        modifyAsscPartsTableView.setItems(Inventory.getAllParts());
-    }
-
-
-
-    public void updatePartTable2() {
-        modifyPartsTableView.setItems(product.getAssociatedParts()); }
 }
