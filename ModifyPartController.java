@@ -187,7 +187,7 @@ public class ModifyPartController implements Initializable {
         modifyPartInventoryTextField.setText(Integer.toString(part.getPartInStock()));
         modifyPartPriceTextField.setText(Double.toString(part.getPartPrice()));
         modifyPartMinTextField.setText(Integer.toString(part.getMin()));
-        modifyPartMaxTextField.setText(Integer.toString(part.getMin()));
+        modifyPartMaxTextField.setText(Integer.toString(part.getMax()));
 
         if (part instanceof InHousePart) {
             modifyinHouseRadioButton.setSelected(true);

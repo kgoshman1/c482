@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 
 public class Product extends Parent {
 
-    protected ObservableList<Part> associatedParts = FXCollections.observableArrayList();
+    public ObservableList<Part> associatedParts = FXCollections.observableArrayList();
     protected int productID;
     protected String productName;
     protected double productPrice;
@@ -27,12 +27,22 @@ public class Product extends Parent {
 
     }
 
+
     public ObservableList<Part> getAssociatedParts() {
         return associatedParts;
     }
 
-    public void setAssociatedParts(Part part) {
+    public void addAssProduct(Part part){
         associatedParts.add(part);
+
+    }
+
+    public void updateAssProduct(int index, Part selectedPart){
+        associatedParts.set(index,selectedPart);
+    }
+
+    public void setAssociatedParts(ObservableList<Part> associatedParts){
+        this.associatedParts = associatedParts;
     }
 
     public int getProductID() {
@@ -82,6 +92,8 @@ public class Product extends Parent {
     public void setMax(int max) {
         this.max = max;
     }
+
+
 
     public static String isPartValid(String partName, int min, int max, int productStock, double partPrice, String errorMessage) {
         if (partName == null) {

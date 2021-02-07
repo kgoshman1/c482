@@ -62,6 +62,9 @@ public class AddProductController implements  Initializable {
     private Button tableViewAddButton;
     @FXML
     private TableView<Part> asscPartsTableView;
+
+
+
     @FXML
     private TableColumn<Part, Integer> asscPartsIDTableColumn;
     @FXML
@@ -78,11 +81,22 @@ public class AddProductController implements  Initializable {
     private Button tableViewSaveButton;
     @FXML
     protected ObservableList<Part> partsToAdd = FXCollections.observableArrayList();
+    @FXML protected ObservableList<Part>tempList = FXCollections.observableArrayList();
+
+
+
+    @FXML protected ObservableList<Part> associatedPartsList = FXCollections.observableArrayList();
+
+
+
+
 
 
     private int prodID;
 
     private boolean isOutsourced;
+
+    Product newestProduct = new Product(0,"",0.0,0,0,0);
 
     @FXML
     void tableViewSaveButton(ActionEvent event) throws IOException {
@@ -111,12 +125,13 @@ public class AddProductController implements  Initializable {
                     product.setPrice(Double.parseDouble(pPrice));
                     product.setMin(Integer.parseInt(pMin));
                     product.setMax(Integer.parseInt(pMax));
+                    for (int i = 0; i < associatedPartsList.size(); i++) {
+                        product.addAssProduct(associatedPartsList.get(i));
+
+                    }
                     Inventory.addProduct(product);
-
-
-
+//                    Inventory.updateProduct(product);
                 }
-
             } Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));  //Unreported Exception IO exception must be caught or declared to be thrown
             Scene tableViewScene = new Scene(tableViewParent);
             Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -131,14 +146,16 @@ public class AddProductController implements  Initializable {
     @FXML
     void setTableViewAddButton(ActionEvent event) {
 
-        Part parts = addPartsTableView.getSelectionModel().getSelectedItem();
-        partsToAdd.add(parts);
-        updatePartTable2();
+        Part selectedparts = addPartsTableView.getSelectionModel().getSelectedItem();
+        newestProduct.addAssProduct(selectedparts);
+        asscPartsTableView.setItems(newestProduct.getAssociatedParts());
+
+        //updatePartTable2();
     }
 
-    public void updatePartTable2() {
-        asscPartsTableView.setItems(partsToAdd);
-    }
+    //public void updatePartTable2() {
+     //   asscPartsTableView.setItems(tempList);
+    //}
 
 
     @FXML
@@ -177,7 +194,7 @@ public class AddProductController implements  Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        updatePartTable();
+        //updatePartTable();
 
         addPartsIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
         addPartsNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
@@ -194,6 +211,10 @@ public class AddProductController implements  Initializable {
         prodID = Inventory.getProductID();
         productIDTextfield.setText(Integer.toString(prodID));
         productIDTextfield.setEditable(false);
+
+        asscPartsTableView.setItems(associatedPartsList);
+
+
 
 //PARTS SEARCH
         FilteredList<Part> filteredData = new FilteredList<>(allParts, p -> true);
@@ -222,9 +243,9 @@ public class AddProductController implements  Initializable {
     }
 
 
-    public void updatePartTable() {
-        addPartsTableView.setItems(Inventory.getAllParts());
-    }
+    //public void updatePartTable() {
+      ///  addPartsTableView.setItems(Inventory.getAllParts());
+    //}
 
 
 
