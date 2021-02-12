@@ -109,14 +109,15 @@ public class AddProductController implements  Initializable {
      * @throws IOException Throws exception upon error
      */
     @FXML
-    void tableViewSaveButton(ActionEvent event) throws IOException {
+    void tableViewSaveButton(ActionEvent event) throws IOException, NumberFormatException {
+
         String pName = productNameTextfield.getText();
         String pInventory = productInventoryTextField.getText();
         String pPrice = priceTextField.getText();
         String pMin = minTextField.getText();
         String pMax = maxTextField.getText();
 
-
+try {
         if (!outsourced) {
             Product product = new Product();
             product.setProductID(productID);
@@ -128,26 +129,35 @@ public class AddProductController implements  Initializable {
             for (int i = 0; i < associatedParts.size(); i++) {
                 product.addAssociatedPart(associatedParts.get(i));
             }
-            saveProduct();
+
             if (keepTrack == 0) {
                 Inventory.addProduct(product);
             } else {
 
             }
+            saveProduct();
             Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
             Scene tableViewScene = new Scene(tableViewParent);
             Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
             window.setScene(tableViewScene);
             window.show();
         }
+    } catch (NumberFormatException e) {
+    Alert alert = new Alert(Alert.AlertType.ERROR, "ALL fields must have valid input to save, please try again");
+    alert.showAndWait();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+
     }
 
     /** Method called by save button to verify data.*/
-    public void saveProduct() {
+    public void saveProduct() throws NumberFormatException {
+        try {
             //Creates new product, and gets values from textfields
             Product product = new Product(Integer.parseInt(productIDTextfield.getText()), productNameTextfield.getText(),
-            Double.parseDouble(priceTextField.getText()), Integer.parseInt(productInventoryTextField.getText()),
-            Integer.parseInt(minTextField.getText()), Integer.parseInt(maxTextField.getText()));
+                    Double.parseDouble(priceTextField.getText()), Integer.parseInt(productInventoryTextField.getText()),
+                    Integer.parseInt(minTextField.getText()), Integer.parseInt(maxTextField.getText()));
 
             String name = productNameTextfield.getText();
             String price = priceTextField.getText();
@@ -203,13 +213,31 @@ public class AddProductController implements  Initializable {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Max must be greater than 0");
                 alert.showAndWait();
                 keepTrack++;
+            } else if (inv2 < min2 || inv2 > max2) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Min must be greater than inventory, and" +
+                        "Max must be less than inventory");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (associatedParts.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must add associated parts before saving");
+                alert.showAndWait();
             }
-            if (keepTrack > 0) {
-                return;
+
+            if (keepTrack == 0) {
+
+                //If verification passes updates product
+                Inventory.updateProduct(productIndex, product);
             }
-            //If verification passes updates product
-            Inventory.updateProduct(productIndex, product);
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "ALL fields must be populated with correct data in" +
+                    " order to be saved");
+            keepTrack++;
+            alert.showAndWait();
         }
+    }
+
+
+
 
 
     /** Adds part to associated parts list.

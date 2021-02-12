@@ -23,37 +23,71 @@ import java.util.ResourceBundle;
  */
 public class ModifyPartController implements Initializable {
 
-    @FXML private int pId;
-    @FXML RadioButton modifyinHouseRadioButton;
-    @FXML RadioButton modifyOutsourcedRadioButton;
-    @FXML Label MachineIDLabel;
-    @FXML TextField modifyPartIDTextField;
-    @FXML TextField modifyPartCompanyNameTextField;
-    @FXML TextField modifyPartMachineIDTextField;
-    @FXML TextField modifyPartInventoryTextField;
-    @FXML TextField modifyPartPriceTextField;
-    @FXML TextField modifyPartMinTextField;
-    @FXML TextField modifyPartMaxTextField;
-    @FXML Button modifyPartCancelButton;
-    @FXML Button modifyPartSaveButton;
+    @FXML
+    private int pId;
+    @FXML
+    RadioButton modifyinHouseRadioButton;
+    @FXML
+    RadioButton modifyOutsourcedRadioButton;
+    @FXML
+    Label MachineIDLabel;
+    @FXML
+    TextField modifyPartIDTextField;
+    @FXML
+    TextField modifyPartCompanyNameTextField;
+    @FXML
+    TextField modifyPartMachineIDTextField;
+    @FXML
+    TextField modifyPartInventoryTextField;
+    @FXML
+    TextField modifyPartPriceTextField;
+    @FXML
+    TextField modifyPartMinTextField;
+    @FXML
+    TextField modifyPartMaxTextField;
+    @FXML
+    Button modifyPartCancelButton;
+    @FXML
+    Button modifyPartSaveButton;
     private boolean outsourced;
     private boolean inhouse;
     int keepTrack = 0;
     private final int partLocation = MainScreenController.partsToModify;
 
-    @FXML void modifyPartIDTextField(ActionEvent event) {}
-    @FXML void modifyPartCompanyNameTextField(ActionEvent event) {}
-    @FXML void modifyPartMachineIDTextField(ActionEvent event) {}
-    @FXML void modifyPartInventoryTextField(ActionEvent event) {}
-    @FXML void modifyPartPriceTextField(ActionEvent event) {}
-    @FXML void modifyPartMinTextField(ActionEvent event) {}
-    @FXML void modifyPartMaxTextField(ActionEvent event) {}
+    @FXML
+    void modifyPartIDTextField(ActionEvent event) {
+    }
 
-        /** Initializes controller after root element has completely processed.
-         *
-         * @param url Fetches the data
-         * @param resourceBundle Contains locale-specific data
-         */
+    @FXML
+    void modifyPartCompanyNameTextField(ActionEvent event) {
+    }
+
+    @FXML
+    void modifyPartMachineIDTextField(ActionEvent event) {
+    }
+
+    @FXML
+    void modifyPartInventoryTextField(ActionEvent event) {
+    }
+
+    @FXML
+    void modifyPartPriceTextField(ActionEvent event) {
+    }
+
+    @FXML
+    void modifyPartMinTextField(ActionEvent event) {
+    }
+
+    @FXML
+    void modifyPartMaxTextField(ActionEvent event) {
+    }
+
+    /**
+     * Initializes controller after root element has completely processed.
+     *
+     * @param url            Fetches the data
+     * @param resourceBundle Contains locale-specific data
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         modifyPartIDTextField.setEditable(false);
@@ -80,13 +114,16 @@ public class ModifyPartController implements Initializable {
 
     }
 
-        /** Saves the modified data and updates values.
-         * RUNTIME ERROR - Unreported Exception IO exception must be caught or declared to be thrown
-         * @param event Defines Event
-         * @throws IOException Throws exception if error occurs
-         */
+    /**
+     * Saves the modified data and updates values.
+     * RUNTIME ERROR - Unreported Exception IO exception must be caught or declared to be thrown
+     *
+     * @param event Defines Event
+     * @throws IOException Throws exception if error occurs
+     */
     @FXML
-    void modifyPartSaveButton(ActionEvent event) throws IOException {
+    void modifyPartSaveButton(ActionEvent event) throws IOException, NumberFormatException {
+        try{
         String pName = modifyPartCompanyNameTextField.getText();
         String pInventory = modifyPartInventoryTextField.getText();
         String pPrice = modifyPartPriceTextField.getText();
@@ -99,6 +136,7 @@ public class ModifyPartController implements Initializable {
         int inv2 = Integer.parseInt(modifyPartInventoryTextField.getText());
         int max2 = Integer.parseInt(modifyPartMaxTextField.getText());
         int min2 = Integer.parseInt(modifyPartMinTextField.getText());
+
 
 
         //Verification
@@ -183,13 +221,20 @@ public class ModifyPartController implements Initializable {
             window.show();
 
         }
-    }
+        } catch (NumberFormatException e){
 
-        /** When the user clicks the cancel button, they are are taken back to the main menu.
-         * RUNTIME ERROR - Unreported Exception IO exception must be caught or declared to be thrown
-         * @param event Defines event
-         * @throws IOException Throws exception if error occurs
-         */
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error. Must include a valid name, please try again");
+                keepTrack++;
+                alert.showAndWait();
+            }
+        }
+
+
+    /** When the user clicks the cancel button, they are are taken back to the main menu.
+     * RUNTIME ERROR - Unreported Exception IO exception must be caught or declared to be thrown
+     * @param event Defines event
+     * @throws IOException Throws exception if error occurs
+     */
     @FXML
     void modifyPartCancelButton(ActionEvent event) throws IOException {
         Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
@@ -199,10 +244,10 @@ public class ModifyPartController implements Initializable {
         window.show();
     }
 
-        /** When the Inhouse Radio Button is selected, the last label is set to "Machine ID".
-         *
-         * @param event Defines Event
-         */
+    /** When the Inhouse Radio Button is selected, the last label is set to "Machine ID".
+     *
+     * @param event Defines Event
+     */
     @FXML
     void modifyinHouseRadioButton(ActionEvent event) {
         if (modifyinHouseRadioButton.isSelected()) {
@@ -210,10 +255,10 @@ public class ModifyPartController implements Initializable {
         }
     }
 
-        /** When the Outsourced Radio Button is selected, the last label is set to "Company Name".
-         *
-         * @param event Defines event
-         */
+    /** When the Outsourced Radio Button is selected, the last label is set to "Company Name".
+     *
+     * @param event Defines event
+     */
     @FXML
     void modifyOutsourcedRadioButton(ActionEvent event) {
         if (modifyOutsourcedRadioButton.isSelected()) {
@@ -222,6 +267,8 @@ public class ModifyPartController implements Initializable {
     }
 
 }
+
+
 
 
 

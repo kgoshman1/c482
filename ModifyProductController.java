@@ -148,32 +148,32 @@ public class ModifyProductController implements Initializable {
     }
 
     /** Method called by save button click to create new product and verify data.*/
-    public void saveProduct() {
-        Product product = new Product(Integer.parseInt(modifyProductIDTextField.getText()), modifyProductNameTextField.getText(),
-                Double.parseDouble(modifyPriceTextField.getText()), Integer.parseInt(modifyProductInventoryTextField.getText()),
-                Integer.parseInt(modifyMinTextField.getText()), Integer.parseInt(modifyMaxTextField.getText()));
+    public void saveProduct() throws NumberFormatException {
+        try {
+            Product product = new Product(Integer.parseInt(modifyProductIDTextField.getText()), modifyProductNameTextField.getText(),
+                    Double.parseDouble(modifyPriceTextField.getText()), Integer.parseInt(modifyProductInventoryTextField.getText()),
+                    Integer.parseInt(modifyMinTextField.getText()), Integer.parseInt(modifyMaxTextField.getText()));
 
-        String name = modifyProductNameTextField.getText();
-        String price = modifyPriceTextField.getText();
-        String inv = modifyProductInventoryTextField.getText();
-        String max = modifyMaxTextField.getText();
-        String min = modifyMinTextField.getText();
+            String name = modifyProductNameTextField.getText();
+            String price = modifyPriceTextField.getText();
+            String inv = modifyProductInventoryTextField.getText();
+            String max = modifyMaxTextField.getText();
+            String min = modifyMinTextField.getText();
 
-        double price2 = Double.parseDouble(modifyPriceTextField.getText());
-        int inv2 = Integer.parseInt(modifyProductInventoryTextField.getText());
-        int max2 = Integer.parseInt(modifyMaxTextField.getText());
-        int min2 = Integer.parseInt(modifyMinTextField.getText());
+            double price2 = Double.parseDouble(modifyPriceTextField.getText());
+            int inv2 = Integer.parseInt(modifyProductInventoryTextField.getText());
+            int max2 = Integer.parseInt(modifyMaxTextField.getText());
+            int min2 = Integer.parseInt(modifyMinTextField.getText());
 
 //
 //        for (int i = 0; i < associatedParts.size(); i++) {
 //            product.addAssociatedPart(associatedParts.get(i));
-        product.setProductID(product.getProductID());
-        product.setPrice(product.getPrice());
-        product.setStock(product.getStock());
-        product.setMax(product.getMax());
-        product.setMin(product.getMin());
-        product.setProductAssParts(associatedParts);
-
+            product.setProductID(product.getProductID());
+            product.setPrice(product.getPrice());
+            product.setStock(product.getStock());
+            product.setMax(product.getMax());
+            product.setMin(product.getMin());
+            product.setProductAssParts(associatedParts);
 
 
             //Verification of data
@@ -217,15 +217,26 @@ public class ModifyProductController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Max must be greater than 0");
                 alert.showAndWait();
                 keepTrack++;
+            } else if (inv2 < min2 || inv2 > max2) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Min must be less than inventory, and" +
+                        "Max must be greater than inventory");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (associatedParts.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must add associated parts before saving");
+                alert.showAndWait();
             }
 
-            if (keepTrack > 0) {
-                return;
-            } else if (keepTrack == 0) {
+            if (keepTrack == 0) {
 
                 Inventory.updateProduct(productIndex, product);
             }
-        }
+        } catch(NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error. ALL fields must be populated with valid input, please try again");
+                keepTrack++;
+                alert.showAndWait();
+            }
+         }
 
 
     /** Adds part to associated parts list.

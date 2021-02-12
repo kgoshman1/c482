@@ -33,9 +33,10 @@ public class AddPartController implements Initializable {
     @FXML Button addpartCancelButton;
     @FXML Button addpartSaveButton;
     @FXML private int partID;
-    @FXML private boolean inhouse;
-    @FXML private boolean outsourced;
+    //@FXML private final boolean inhouse = inHouseRadioButton.isSelected();
+    @FXML public boolean outsourced;
     @FXML int keepTrack = 0;
+    @FXML private boolean isInhouse;
 
     /** Initializes controller after root element has completely processed.
      *  RUNTIME ERROR - Unreported Exception IO exception must be caught or declared to be thrown
@@ -58,125 +59,134 @@ public class AddPartController implements Initializable {
      * @throws IOException Throws exception upon error
      */
     @FXML
-    void addpartSaveButton(ActionEvent event) throws IOException {
+    void addpartSaveButton(ActionEvent event) throws IOException, NumberFormatException {
+        try {
+            //Gets values from textfields
+            String name = addPartNameTextField.getText();
+            String inventory = addPartInventoryTextField.getText();
+            String price = addPartPriceTextField.getText();
+            String pMin = addPartMinTextField.getText();
+            String machID = addPartMachineIDTextField.getText();
+            String max = addPartMaxTextField.getText();
 
-        //Gets values from textfields
-        String name = addPartNameTextField.getText();
-        String inventory = addPartInventoryTextField.getText();
-        String price = addPartPriceTextField.getText();
-        String pMin = addPartMinTextField.getText();
-        String machID = addPartMachineIDTextField.getText();
-        String max = addPartMaxTextField.getText();
+            //Converts values to non string values to be used in validation process
+            double price2 = Double.parseDouble(addPartPriceTextField.getText());
+            int inv2 = Integer.parseInt(addPartInventoryTextField.getText());
+            int max2 = Integer.parseInt(addPartMaxTextField.getText());
+            int min2 = Integer.parseInt(addPartMinTextField.getText());
 
-        //Converts values to non string values to be used in validation process
-        double price2 = Double.parseDouble(addPartPriceTextField.getText());
-        int inv2 = Integer.parseInt(addPartInventoryTextField.getText());
-        int max2 = Integer.parseInt(addPartMaxTextField.getText());
-        int min2 = Integer.parseInt(addPartMinTextField.getText());
 
-        //Verification of values entered in Textfields
-        if (name  == null || name.trim().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error. Must include a valid name, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+            //Verification of values entered in Textfields
+            if (name == null || name.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error. Must include a valid name, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (inventory.equals("") || name.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Inventory, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (inv2 < 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Inventory, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (price.equals("") || name.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Price, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (price2 < 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid price, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (pMin.equals("") || name.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Min, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (min2 < 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid min, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (machID.equals("") || name.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Company Name or Machine ID, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (max.equals("") || name.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Max, please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (max2 < min2) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Max must be less than min please try again");
+                alert.showAndWait();
+                keepTrack++;
+            } else if (addPartNameTextField == null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "One or more fields is missing or incorrect, please" +
+                        "try again");
+                alert.showAndWait();
+            } else if (inv2 < min2 || inv2 > max2) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Min must be greater than inventory, and" +
+                        "Max must be less than inventory");
+                alert.showAndWait();
+                keepTrack++;
 
-        else if (inventory.equals("") || name.trim().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Inventory, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+            }
 
-        else if (inv2 < 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Inventory, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+            if (keepTrack == 0) {
 
-        else if (price.equals("") || name.trim().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Price, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+                //Set Textfield values to match either inhouse or outsourced constructor values
+                if (outsourced) {
 
-        else if (price2 < 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid price, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+                    OutsourcedPart outsourced = new OutsourcedPart();
+                    outsourced.setPartID(partID);
+                    outsourced.setPartName(name);
+                    outsourced.setPartInStock(Integer.parseInt(inventory));
+                    outsourced.setPartPrice(Double.parseDouble(price));
+                    outsourced.setMin(Integer.parseInt(pMin));
+                    outsourced.setMax(Integer.parseInt(max));
+                    outsourced.setCompanyName(machID);
+                    Inventory.addPart(outsourced);
 
-        else if (pMin.equals("") || name.trim().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Min, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+                    Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
+                    Scene tableViewScene = new Scene(tableViewParent);
+                    Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    window.setScene(tableViewScene);
+                    window.show();
 
-        else if (min2 < 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid min, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
 
-        else if (machID.equals("") || name.trim().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Company Name or Machine ID, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+                } else {
+                    InHousePart inhouse = new InHousePart();
+                    inhouse.setPartID(partID);
+                    inhouse.setPartName(name);
+                    inhouse.setPartInStock(Integer.parseInt(inventory));
+                    inhouse.setPartPrice(Double.parseDouble(price));
+                    inhouse.setMin(Integer.parseInt(pMin));
+                    inhouse.setMax(Integer.parseInt(max));
+                    inhouse.setMachineID(Integer.parseInt(machID));
+                    Inventory.addPart(inhouse);
 
-        else if (max.equals("") || name.trim().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid Max, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
+                    Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
+                    Scene tableViewScene = new Scene(tableViewParent);
+                    Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    window.setScene(tableViewScene);
+                    window.show();
 
-        else if (max2 < min2) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error.  Must include valid max, please try again");
-            alert.showAndWait();
-            keepTrack++;
-        }
-
-        if (keepTrack == 0) {
-
-        //Set Textfield values to match either inhouse or outsourced constructor values
-            if (inhouse) {
-                InHousePart inhouse = new InHousePart();
-                inhouse.setPartID(partID);
-                inhouse.setPartName(name);
-                inhouse.setPartInStock(Integer.parseInt(inventory));
-                inhouse.setPartPrice(Double.parseDouble(price));
-                inhouse.setMin(Integer.parseInt(pMin));
-                inhouse.setMax(Integer.parseInt(max));
-                inhouse.setMachineID(Integer.parseInt(machID));
-                Inventory.addPart(inhouse);
-            } else {
-                OutsourcedPart outsourced = new OutsourcedPart();
-                outsourced.setPartID(partID);
-                outsourced.setPartName(name);
-                outsourced.setPartInStock(Integer.parseInt(inventory));
-                outsourced.setPartPrice(Double.parseDouble(price));
-                outsourced.setMin(Integer.parseInt(pMin));
-                outsourced.setMax(Integer.parseInt(max));
-                outsourced.setCompanyName(machID);
-                Inventory.addPart(outsourced);
-
+                }
+                //If any verfification step fails, +1 is added to keep track and takes user back to homepage to try again
+            } else if (keepTrack > 0) {
                 Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
                 Scene tableViewScene = new Scene(tableViewParent);
                 Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 window.setScene(tableViewScene);
                 window.show();
-
             }
-            //If any verfification step fails, +1 is added to keep track and takes user back to homepage to try again
-        } else if (keepTrack > 0){
-            Parent tableViewParent = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
-            Scene tableViewScene = new Scene(tableViewParent);
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            window.setScene(tableViewScene);
-            window.show();
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "ERROR, ALL fields must have valid input to be saved");
+            alert.showAndWait();
+            ;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    /** When Cancel button is pushed takes user back to Mainscreen.
+        /** When Cancel button is pushed takes user back to Mainscreen.
      *
      * @param event Defines an action
      * @throws IOException Throws an exception if incorrect
@@ -196,9 +206,10 @@ public class AddPartController implements Initializable {
      * @param event Responds to an event
      */
     @FXML
-    void inHouseRadioButton(ActionEvent event) {
+    void inHouseRadioButton(ActionEvent event) throws IOException{
         if (inHouseRadioButton.isSelected()) {
             MachineIdLabel.setText("Machine ID");
+            outsourced = false;
         }
     }
 
@@ -207,9 +218,10 @@ public class AddPartController implements Initializable {
      * @param event Responds to an event
      */
     @FXML
-    void OutsourcedRadioButton(ActionEvent event) {
+    void OutsourcedRadioButton(ActionEvent event) throws IOException{
         if (OutsourcedRadioButton.isSelected()) {
             MachineIdLabel.setText("Company Name");
+            outsourced = true;
         }
     }
 }
